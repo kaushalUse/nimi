@@ -1,7 +1,7 @@
 package com.rootcode.test.practicalTest.controller.rest;
 
+import com.rootcode.test.practicalTest.dto.TransactionDTO;
 import com.rootcode.test.practicalTest.dto.TransactionRequest;
-import com.rootcode.test.practicalTest.entity.Transaction;
 import com.rootcode.test.practicalTest.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,7 +21,7 @@ public class TransactionRestController {
 
     @GetMapping("/view-transactions")
     public String loadTransactions(Model model) {
-        List<Transaction> transactions = transactionService.getAll();
+        List<TransactionDTO> transactions = transactionService.getAll();
         model.addAttribute("transactions", transactions);
         return "ViewTransactions";
     }

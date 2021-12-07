@@ -1,5 +1,6 @@
 package com.rootcode.test.practicalTest.controller;
 
+import com.rootcode.test.practicalTest.dto.LedgerHolderRequestDTO;
 import com.rootcode.test.practicalTest.entity.LedgerHolderRequest;
 import com.rootcode.test.practicalTest.service.LedgerHolderRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +27,13 @@ public class LedgerHolderRequestController {
 
     @GetMapping("/ledger-holder-request/{id}")
     public String loadLedgerHolderRequest(@PathVariable(required = false) String id, Model model) {
-        LedgerHolderRequest ledgerHolderRequest = new LedgerHolderRequest();
+        LedgerHolderRequestDTO ledgerHolderRequestDTO = new LedgerHolderRequestDTO();
         try {
-            ledgerHolderRequest = ledgerHolderRequestService.getLedgerHolderRequest(Long.parseLong(id));
+            ledgerHolderRequestDTO = ledgerHolderRequestService.getLedgerHolderRequest(Long.parseLong(id));
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
         }
-        model.addAttribute("ledgerHolderRequest", ledgerHolderRequest);
+        model.addAttribute("ledgerHolderRequest", ledgerHolderRequestDTO);
         if(id !=null) {
             return "DeleteLedgerHolderRequest";
         }

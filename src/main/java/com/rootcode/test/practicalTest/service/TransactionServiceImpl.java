@@ -1,5 +1,7 @@
 package com.rootcode.test.practicalTest.service;
 
+import com.rootcode.test.practicalTest.dto.LedgerHolderRequestDTO;
+import com.rootcode.test.practicalTest.dto.TransactionDTO;
 import com.rootcode.test.practicalTest.dto.TransactionRequest;
 import com.rootcode.test.practicalTest.entity.Ledger;
 import com.rootcode.test.practicalTest.entity.Transaction;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /*
 Ledge rHolder Request Service related methods
@@ -35,9 +38,15 @@ public class TransactionServiceImpl implements TransactionService{
 
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public List<Transaction> getAll() {
+    public List<TransactionDTO> getAll() {
         LOGGER.info("find Transactions done by " + UtilClass.getCurrentUser() + " at : " + new Date().getTime());
-        return transcationRepository.findAll();
+            List<Transaction> transactions = transcationRepository.findAll();
+        return transactions.stream()
+                .map(transaction -> new TransactionDTO(transaction.getId(), TransactionDTO.Type.valueOf(transaction.getType().name()),
+                        transaction.getAmount(), transaction.getCurrency(),
+                        transaction.getFromLedger(),transaction.getToLedger(), transaction.getCreatedDate()))
+                .collect(Collectors.toList());
+
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.rootcode.test.practicalTest.service;
 
+import com.rootcode.test.practicalTest.dto.LedgerHolderRequestDTO;
 import com.rootcode.test.practicalTest.entity.LedgerHolderRequest;
 import com.rootcode.test.practicalTest.repository.LedgerHolderRequestRepository;
 import com.rootcode.test.practicalTest.util.UtilClass;
@@ -14,6 +15,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /*
 Ledger Holder Request Service related methods
@@ -37,26 +39,35 @@ public class LedgerHolderRequestServiceImpl  implements LedgerHolderRequestServi
     }
 
     @Override
-    @Transactional(propagation = Propagation.MANDATORY)
-    public LedgerHolderRequest createLedgerHolderRequest(LedgerHolderRequest ledgerHolderRequest) throws JDBCException {
+    @Transactional(propagation = Propagation.REQUIRED)
+    public Long createLedgerHolderRequest(LedgerHolderRequest ledgerHolderRequest) throws JDBCException {
         ledgerHolderRequest =  ledgerHolderRequestRepository.saveAndFlush(ledgerHolderRequest);
         LOGGER.info("create LedgerHolder Request :"+ ledgerHolderRequest.getId() + " by " + UtilClass.getCurrentUser() + " at : " + new Date().getTime());
-        return ledgerHolderRequestRepository.saveAndFlush(ledgerHolderRequest);
+        return ledgerHolderRequestRepository.saveAndFlush(ledgerHolderRequest).getId();
     }
 
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public List<LedgerHolderRequest> getLedgerHolderRequests() {
+    public List<LedgerHolderRequestDTO> getLedgerHolderRequests() {
         LOGGER.info("find all LedgerHolder Requests done by " + UtilClass.getCurrentUser());
-        return ledgerHolderRequestRepository.findAll();
+        List<LedgerHolderRequest> ledgerHolderRequests = ledgerHolderRequestRepository.findAll();
+        return ledgerHolderRequests.stream()
+                .map(ledgerHolder -> new LedgerHolderRequestDTO(ledgerHolder.getId(), ledgerHolder.getName(), ledgerHolder.getEmail(), ledgerHolder.getComment()))
+                .collect(Collectors.toList());
+
     }
 
     @Override
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public LedgerHolderRequest getLedgerHolderRequest(Long id) throws EntityNotFoundException {
+    public LedgerHolderRequestDTO getLedgerHolderRequest(Long id) throws EntityNotFoundException {
         LedgerHolderRequest ledgerHolderRequest = ledgerHolderRequestRepository.getById(id);
         LOGGER.info("Get LedgerHolder Request :"+ ledgerHolderRequest.getId() + " by " + UtilClass.getCurrentUser() + " at : " + new Date().getTime());
-        return ledgerHolderRequest;
+        LedgerHolderRequestDTO ledgerHolderRequestDTO =  new LedgerHolderRequestDTO();
+        ledgerHolderRequestDTO.setId(ledgerHolderRequest.getId());
+        ledgerHolderRequestDTO.setName(ledgerHolderRequest.getName());
+        ledgerHolderRequestDTO.setEmail(ledgerHolderRequest.getEmail());
+        ledgerHolderRequestDTO.setComment(ledgerHolderRequest.getComment());
+        return ledgerHolderRequestDTO;
     }
 }
 

@@ -1,5 +1,6 @@
 package com.rootcode.test.practicalTest.service;
 
+import com.rootcode.test.practicalTest.dto.LedgerHolderRequestDTO;
 import com.rootcode.test.practicalTest.entity.LedgerHolderRequest;
 import org.hibernate.JDBCException;
 
@@ -10,9 +11,9 @@ public interface LedgerHolderRequestService {
 
     void deleteLedgerHolder(Long id) throws JDBCException;
 
-    LedgerHolderRequest createLedgerHolderRequest(LedgerHolderRequest ledgerHolderRequest) throws JDBCException;
+    Long createLedgerHolderRequest(LedgerHolderRequest ledgerHolderRequest) throws JDBCException;
 
-    List<LedgerHolderRequest> getLedgerHolderRequests();
+    List<LedgerHolderRequestDTO> getLedgerHolderRequests();
 
-    LedgerHolderRequest getLedgerHolderRequest(Long id) throws EntityNotFoundException;
+    LedgerHolderRequestDTO getLedgerHolderRequest(Long id) throws EntityNotFoundException;
 }

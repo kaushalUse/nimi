@@ -13,6 +13,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -28,16 +30,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private CustomAuthenticationFailureHandler failureHandler;
 
     @Bean
+    public AuthTokenFilter authenticationJwtTokenFilter() {
+        return new AuthTokenFilter();
+    }
+    @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http.csrf().ignoringAntMatchers("/rest-api/**").disable()
                 .authorizeRequests()
-                .antMatchers("/view-transactions**","/ledger-holder-request/**","/ledger-holder-request-list").hasRole("OPERATIONS")
-                .antMatchers("/view-add-transactions","/do-transaction/**","/ledger-holder-request-list","/ledger-holder-request/**","/ledger-holder-request-delete/**").hasRole("ADMIN")
+                .antMatchers("/view-transactions**","/ledger-holder-request","/ledger-holder-request**/**","/ledger-holder-request-list**").hasRole("OPERATIONS")
+                .antMatchers("/view-add-transactions","/do-transaction/**","/ledger-holder-request-list","/ledger-holder-request","/ledger-holder-request/**","/ledger-holder-request-delete/**").hasRole("ADMIN")
                 .antMatchers("/resources/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -53,6 +59,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll();
 
       //  http.authorizeRequests().antMatchers("/").permitAll();
+        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+
     }
 
     @Bean
