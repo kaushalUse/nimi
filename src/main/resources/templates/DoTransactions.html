@@ -1,0 +1,153 @@
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <!--    <meta th:name="${_csrf.parameterName}" th:content="${_csrf.token}"/>-->
+    <title> Script in head section </title>
+    <script type="text/javascript">
+
+function doPurchase() {
+    var fromLedger = $("#fromLedger").val();
+    var toLedger = $("#toLedger").val();
+    var amount = $("#amount").val();
+    var token = $("meta[name='_csrf']").attr("content");
+    var jsonData = JSON.stringify({
+        fromLedger: fromLedger,
+        toLedger: toLedger,
+        amount: amount
+    });
+    $.ajax({
+        url: 'do-transaction',
+        headers: {"X-CSRF-TOKEN": token},
+        type: 'POST',
+        contentType: "application/json",
+        data: jsonData,
+        dataType: "json",
+        success: function (result) {
+            if (result != null) {
+                if (result.data !== undefined && result.data != null) {
+                }
+            }
+        },
+        error: function (e) {
+            console.log("ERROR: ", e);
+        },
+        done: function (e) {
+            console.log("DONE");
+        }
+    });
+ }
+
+
+
+    </script>
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Leader</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li sec:authorize="hasAuthority('ADMIN')">
+                <a class="" th:href="@{'/ledger-holder-request-list'}" aria-expanded="false">
+                    Ledger Holder Requests
+                </a>
+            </li>
+            <li sec:authorize="hasAuthority('ADMIN')">
+                <a class="" th:href="@{'/ledger-holder-request/1'}" aria-expanded="false">
+                    Delete Ledger Holder Request
+                </a>
+            </li>
+            <li>
+                <a class="" th:href="@{'/logout'}" aria-expanded="false">
+                    Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<section>
+    <table class="table">
+        <caption></caption>
+        <thead>
+        <tr>
+            <th scope="col"> Id</th>
+            <th scope="col"> Type</th>
+            <th scope="col"> From Account</th>
+            <th scope="col"> To Account</th>
+            <th scope="col"> Amount</th>
+            <th scope="col"> Currency</th>
+            <th scope="col"> Create Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="transactions : ${transactions}">
+            <td th:text="${transactions.id}"></td>
+            <td th:text="${transactions.type}"></td>
+            <td th:text="${transactions.fromLedger.id}"></td>
+            <td th:text="${transactions.toLedger.id}"></td>
+            <td th:text="${transactions.amount}"></td>
+            <td th:text="${transactions.currency}"></td>
+            <td th:text="${transactions.createdDate}"></td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+<section>
+    <div class="form-row">
+        <div class="col-10">
+            <h4 Transfer Money/>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-4">
+            <div class="pro-label">
+                <label>From Card </label>
+            </div>
+            <div class="pro-value">
+                <input class="form-group-input" id="fromLedger" name="fromLedger"/>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="pro-label">
+                <label> To Card </label>
+            </div>
+            <div class="pro-value">
+                <input class="form-group-input" id="toLedger" name="toLedger"/>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="pro-label">
+                <label> Amount </label>
+            </div>
+            <div class="pro-value">
+                <input class="form-group-input" id="amount" name="amount"/>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="pro-label">
+                <label> Type </label>
+            </div>
+            <div class="pro-value">
+                <select name="type" id=type>
+                    <option value="PURCHASE">PURCHASE</option>
+                    <option value="REVERT">REVERT</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-sm-2 float-right">
+                <div class="input-group">
+                    <button class="import-btn button-tap" id="transferBtn" type="button" onclick="doPurchase()">
+                        Do Transaction
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

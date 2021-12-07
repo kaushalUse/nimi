@@ -1,0 +1,100 @@
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <!--    <meta th:name="${_csrf.parameterName}" th:content="${_csrf.token}"/>-->
+    <title> Script in head section </title>
+    <script type="text/javascript">
+
+function myFunction() {
+    var fromLedger = $("#fromLedger").val();
+    var toLedger = $("#toLedger").val();
+    var amount = $("#amount").val();
+    var token = $("meta[name='_csrf']").attr("content");
+    var jsonData = JSON.stringify({
+        fromLedger: fromLedger,
+        toLedger: toLedger,
+        amount: amount
+    });
+    $.ajax({
+        url: 'do-transaction',
+        headers: {"X-CSRF-TOKEN": token},
+        type: 'POST',
+        contentType: "application/json",
+        data: jsonData,
+        dataType: "json",
+        success: function (result) {
+            if (result != null) {
+                if (result.data !== undefined && result.data != null) {
+                }
+            }
+        },
+        error: function (e) {
+            console.log("ERROR: ", e);
+        },
+        done: function (e) {
+            console.log("DONE");
+        }
+    });
+ }
+
+
+
+    </script>
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Leader</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li sec:authorize="hasAuthority('ROLE_OPERATIONS')">
+                <a class="" th:href="@{'/ledger-holder-request-list'}" aria-expanded="false">
+                    Customer Requests
+                </a>
+            </li>
+            <li sec:authorize="hasAuthority('ROLE_OPERATIONS')">
+                <a class="" th:href="@{'/ledger-holder-request'}" aria-expanded="false">
+                    Create Request
+                </a>
+            </li>
+            <li>
+                <a class="" th:href="@{'/logout'}" aria-expanded="false">
+                    Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<section>
+    <table class="table">
+        <caption></caption>
+        <thead>
+        <tr>
+            <th scope="col"> Id</th>
+            <th scope="col"> Type</th>
+            <th scope="col"> From Account</th>
+            <th scope="col"> To Account</th>
+            <th scope="col"> Amount</th>
+            <th scope="col"> Currency</th>
+            <th scope="col"> Create Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="transaction : ${transactions}">
+            <td th:text="${transaction.id}"></td>
+            <td th:text="${transaction.type}"></td>
+            <td th:text="${transaction.fromLedger.id}"></td>
+            <td th:text="${transaction.toLedger.id}"></td>
+            <td th:text="${transaction.amount}"></td>
+            <td th:text="${transaction.currency}"></td>
+            <td th:text="${transaction.createdDate}"></td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+</body>
+</html>

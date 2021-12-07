@@ -1,0 +1,59 @@
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <!--    <meta th:name="${_csrf.parameterName}" th:content="${_csrf.token}"/>-->
+    <title> Script in head section </title>
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Leader</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li sec:authorize="hasAuthority('ROLE_OPERATIONS')">
+                <div>
+                    <a class="" th:href="@{'/view-transactions'}" aria-expanded="false">
+                        View Transactions
+                    </a>
+                </div>
+            </li>
+            <li sec:authorize="hasAuthority('ROLE_OPERATIONS')">
+                <a class="" th:href="@{'/ledger-holder-request'}" aria-expanded="false">
+                    Create Request
+                </a>
+            </li>
+            <li>
+                <a class="" th:href="@{'/logout'}" aria-expanded="false">
+                    Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<section>
+    <table class="table">
+        <caption></caption>
+        <thead>
+        <tr>
+            <th scope="col"> Id</th>
+            <th scope="col"> name</th>
+            <th scope="col"> email</th>
+            <th scope="col"> comment</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="request : ${ledgerHolderRequests}">
+            <td th:text="${request.id}"></td>
+            <td th:text="${request.name}"></td>
+            <td th:text="${request.email}"></td>
+            <td th:text="${request.comment}"></td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+</body>
+</html>

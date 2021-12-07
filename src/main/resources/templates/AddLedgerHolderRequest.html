@@ -1,0 +1,63 @@
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Leader</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li sec:authorize="hasAuthority('ROLE_OPERATIONS')">
+                <div>
+                    <a class="" th:href="@{'/view-transactions'}" aria-expanded="false">
+                        View Transactions
+                    </a>
+                </div>
+            </li>
+            <li sec:authorize="hasAuthority('ROLE_OPERATIONS')">
+                <a class="" th:href="@{'/ledger-holder-request-list'}" aria-expanded="false">
+                    Customer Requests
+                </a>
+            </li>
+            <li>
+                <a class="" th:href="@{'/logout'}" aria-expanded="false">
+                    Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container register">
+    <div class="row">
+        <div class="col-md-9 register-right">
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <h4 class="register-heading">Add Customer</h4>
+                    <form id="legerHolderForm" th:object="${ledgerHolderRequest}" method="POST">
+                        <div class="row register-form">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Name *"
+                                           th:field="*{name}" name="name" id="name"/>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="email *"
+                                           th:field="*{email}" name="email" id="email"/>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="comment *"
+                                           th:field="*{comment}" name="comment" id="comment"/>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <input type="submit" value="Create"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
