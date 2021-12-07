@@ -12,7 +12,7 @@
     <artifactId>practicalTest</artifactId>
     <version>1</version>
     <packaging>jar</packaging>
-    <name>practicalTest</name>
+    <name>practical.test</name>
     <description>SSE test</description>
 
     <properties>
